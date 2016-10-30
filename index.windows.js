@@ -1,49 +1,100 @@
+var formatTime = require("minutes-seconds-milliseconds");
 import React, { Component } from 'react';
 import {
   Text,
   View,
+  ScrollView,
   StyleSheet,
+  TouchableHighlight,
   AppRegistry
 } from "react-native";
 
 var StopWatch = React.createClass({
+
+  getInitialState: function(){
+    return {
+      timeElapsed: null,
+      running: false,
+      startTime: null,
+      laps: []
+    }
+  },
   render: function(){
     return <View style={styles.container}>
-          <View style={[styles.header, this.border("yellow")]}>
-            <View style={[styles.timerWrapper,this.border("red")]}>
-              <Text>
-                00:00.00
+          <View style={styles.header}>
+            <View style={styles.timerWrapper}>
+              <Text style={styles.timer}>
+                {formatTime(this.state.timeElapsed)}
               </Text>
             </View>
-            <View style={[styles.buttonWrapper, this.border("green")]}>
+            <View style={styles.buttonWrapper}>
               {this.startStopButton()}
               {this.lapButton()}
             </View>
               </View>
-              <View style={[styles.footer, this.border("blue")]}>
-                <Text>List of laps</Text>
-              </View>
+              <ScrollView style={styles.footer}>
+                {this.laps()}
+              </ScrollView>
           </View>
   },
+  laps: function(){
+    return this.state.laps.map(function(time, index){
+      return <View style={styles.lap}>
+        <Text style={styles.lapText}>
+          Lap#{index + 1}
+        </Text>
+        <Text style={styles.lapText}>
+          {formatTime(time)}
+        </Text>
+      </View>
+    });
+  },
   startStopButton: function() {
-    return <View>
-      <Text>
-        Start
+    var style = this.state.running ? styles.stopButton : styles.startButton;
+
+    return <TouchableHighlight
+      underlayColor="gray"
+      style={[styles.button, style]}
+      onPress={this.handleStartPress}>
+      <Text style={styles.buttonText}>
+        {this.state.running ? "Stop" : "Start"}
       </Text>
-    </View>
+    </TouchableHighlight>
   },
   lapButton: function() {
-    return <View>
-      <Text>
+    return <TouchableHighlight
+    underlayColor="gray"
+    style={[styles.button, styles.lapButton]}
+    onPress={this.handleLapPress}>
+      <Text style={styles.buttonText}>
         Lap
       </Text>
-    </View>
+    </TouchableHighlight>
   },
-  border: function(color) {
-    return {
-      borderColor : color,
-      borderWidth: 4
+  handleLapPress: function(){
+    var lap = this.state.timeElapsed;
+
+    this.setState({
+      startTime: new Date(),
+      laps: this.state.laps.concat([lap])
+    });
+
+  },
+  handleStartPress: function(){
+    if(this.state.running){
+    clearInterval(this.interval);
+    this.setState({running:false});
+    return
     }
+
+    this.setState({startTime : new Date()});
+
+    this.interval = setInterval(() => {
+      this.setState ({
+        timeElapsed: new Date() - this.state.startTime,
+        running: true
+      });
+    }, 30);
   }
 });
 
@@ -53,7 +104,8 @@ var styles = StyleSheet.create({
     alignItems: "stretch"
   },
   header: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#2EC2AC"
   },
   footer: {
     flex: 1
@@ -68,6 +120,41 @@ var styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center"
+  },
+  timer: {
+    fontSize: 60,
+    color: "#FFFFFF"
+  },
+  button: {
+    borderWidth: 2,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF"
+  },
+  buttonText: {
+    color: "#2EC2AC",
+    fontSize: 26,
+    fontWeight: "700"
+  },
+  startButton: {
+    borderColor: "#FFFFFF"
+  },
+  stopButton: {
+    borderColor: "#CC0000"
+  },
+  lapButton: {
+    borderColor: "#FFFFFF"
+  },
+  lap: {
+    justifyContent: "space-around",
+    flexDirection: "row"
+  },
+  lapText: {
+    fontSize: 30,
+    color: "#2EC2AC"
   }
 });
 

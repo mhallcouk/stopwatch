@@ -153,7 +153,8 @@ var styles = StyleSheet.create({
     flexDirection: "row"
   },
   lapText: {
-    fontSize: 30
+    fontSize: 30,
+    color: "#2EC2AC"
   }
 });
 

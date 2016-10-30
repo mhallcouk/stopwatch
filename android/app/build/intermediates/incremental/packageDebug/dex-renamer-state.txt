@@ -1,0 +1,7 @@
+#Sun Oct 30 14:47:55 GMT 2016
+base.0=/Users/mathewhall/Development/stopwatch/android/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_9aa204ad5adfd147acb95db0a71d89c3a73976a7
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=/Users/mathewhall/Development/stopwatch/android/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_b13a6468bb43aed51b2144f7447cb59205b2099c/classes.dex
+base.1=/Users/mathewhall/Development/stopwatch/android/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_b13a6468bb43aed51b2144f7447cb59205b2099c
+file.0=/Users/mathewhall/Development/stopwatch/android/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_9aa204ad5adfd147acb95db0a71d89c3a73976a7/classes.dex

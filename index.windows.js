@@ -112,7 +112,7 @@ var StopWatch = React.createClass({
         timeElapsed: new Date() - this.state.startTime,
         running: true
       });
-    }, 30);
+    }, 100);
   }
 });
 
@@ -137,7 +137,8 @@ var styles = StyleSheet.create({
     flex: 3,
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 20
   },
   timer: {
     fontSize: 60,

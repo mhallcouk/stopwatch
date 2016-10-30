@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
+  ScrollView,
   StyleSheet,
   TouchableHighlight,
   AppRegistry
@@ -12,59 +13,88 @@ var StopWatch = React.createClass({
 
   getInitialState: function(){
     return {
-      timeElapsed: null
+      timeElapsed: null,
+      running: false,
+      startTime: null,
+      laps: []
     }
   },
   render: function(){
     return <View style={styles.container}>
-          <View style={[styles.header, this.border("yellow")]}>
-            <View style={[styles.timerWrapper,this.border("red")]}>
+          <View style={styles.header}>
+            <View style={styles.timerWrapper}>
               <Text style={styles.timer}>
                 {formatTime(this.state.timeElapsed)}
               </Text>
             </View>
-            <View style={[styles.buttonWrapper, this.border("green")]}>
+            <View style={styles.buttonWrapper}>
               {this.startStopButton()}
               {this.lapButton()}
             </View>
               </View>
-              <View style={[styles.footer, this.border("blue")]}>
-                <Text>List of laps</Text>
-              </View>
+              <ScrollView style={styles.footer}>
+                {this.laps()}
+              </ScrollView>
           </View>
   },
+  laps: function(){
+    return this.state.laps.map(function(time, index){
+      return <View style={styles.lap}>
+        <Text style={styles.lapText}>
+          Lap#{index + 1}
+        </Text>
+        <Text style={styles.lapText}>
+          {formatTime(time)}
+        </Text>
+      </View>
+    });
+  },
   startStopButton: function() {
+    var style = this.state.running ? styles.stopButton : styles.startButton;
+
     return <TouchableHighlight
       underlayColor="gray"
-      style={styles.button}
+      style={[styles.button, style]}
       onPress={this.handleStartPress}>
-      <Text>
-        Start
+      <Text style={styles.buttonText}>
+        {this.state.running ? "Stop" : "Start"}
       </Text>
     </TouchableHighlight>
   },
   lapButton: function() {
-    return <View
-    style={styles.button}>
-      <Text>
+    return <TouchableHighlight
+    underlayColor="gray"
+    style={[styles.button, styles.lapButton]}
+    onPress={this.handleLapPress}>
+      <Text style={styles.buttonText}>
         Lap
       </Text>
-    </View>
+    </TouchableHighlight>
+  },
+  handleLapPress: function(){
+    var lap = this.state.timeElapsed;
+
+    this.setState({
+      startTime: new Date(),
+      laps: this.state.laps.concat([lap])
+    });
+
   },
   handleStartPress: function(){
-    var startTime = new Date();
+    if(this.state.running){
+    clearInterval(this.interval);
+    this.setState({running:false});
+    return
+    }
 
-    setInterval(() => {
+    this.setState({startTime : new Date()});
+
+    this.interval = setInterval(() => {
       this.setState ({
-        timeElapsed: new Date() - startTime
+        timeElapsed: new Date() - this.state.startTime,
+        running: true
       });
     }, 30);
-  },
-  border: function(color) {
-    return {
-      borderColor : color,
-      borderWidth: 4
-    }
   }
 });
 
@@ -74,7 +104,8 @@ var styles = StyleSheet.create({
     alignItems: "stretch"
   },
   header: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#2EC2AC"
   },
   footer: {
     flex: 1
@@ -90,6 +121,10 @@ var styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center"
   },
+  timer: {
+    fontSize: 60,
+    color: "#FFFFFF"
+  },
   button: {
     borderWidth: 2,
     height: 100,
@@ -97,9 +132,28 @@ var styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFFFF"
   },
-  timer: {
-    fontSize: 60
+  buttonText: {
+    color: "#2EC2AC",
+    fontSize: 26,
+    fontWeight: "700"
+  },
+  startButton: {
+    borderColor: "#FFFFFF"
+  },
+  stopButton: {
+    borderColor: "#CC0000"
+  },
+  lapButton: {
+    borderColor: "#FFFFFF"
+  },
+  lap: {
+    justifyContent: "space-around",
+    flexDirection: "row"
+  },
+  lapText: {
+    fontSize: 30
   }
 });
 

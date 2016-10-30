@@ -34,8 +34,19 @@ var StopWatch = React.createClass({
               </View>
               <ScrollView style={styles.footer}>
                 {this.laps()}
+                {this.resetButton()}
               </ScrollView>
           </View>
+  },
+  resetButton: function() {
+    return <TouchableHighlight
+    underlayColor="gray"
+    style={[styles.resetButton]}
+    onPress={this.handleResetPress}>
+      <Text style={styles.resetText}>
+        Reset
+      </Text>
+    </TouchableHighlight>
   },
   laps: function(){
     return this.state.laps.map(function(time, index){
@@ -80,6 +91,13 @@ var StopWatch = React.createClass({
     });
 
   },
+  handleResetPress: function(){
+    this.setState({
+      startTime : new Date(),
+      timeElapsed: null,
+      laps: []
+    });
+  },
   handleStartPress: function(){
     if(this.state.running){
     clearInterval(this.interval);
@@ -123,7 +141,8 @@ var styles = StyleSheet.create({
   },
   timer: {
     fontSize: 60,
-    color: "#FFFFFF"
+    color: "#FFFFFF",
+    fontWeight: "500"
   },
   button: {
     borderWidth: 2,
@@ -155,6 +174,17 @@ var styles = StyleSheet.create({
   lapText: {
     fontSize: 30,
     color: "#2EC2AC"
+  },
+  resetButton: {
+    height:40,
+    marginTop: 10,
+    marginBottom: 10
+  },
+  resetText: {
+    fontSize: 30,
+    color: "red",
+    alignSelf: 'stretch',
+    textAlign: 'center'
   }
 });
 
